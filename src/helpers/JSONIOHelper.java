@@ -58,8 +58,10 @@ public class JSONIOHelper {
 			writer.write(JSONString);
 			// print completion message to the user
 			System.out.println("Saving JSON to file successfully completed.");
+			System.out.println("\n");
 		} catch (Exception e) {
 			System.out.println("Saving JSON to file failed...");
+			System.out.println("\n");
 		}
 		;
 	}

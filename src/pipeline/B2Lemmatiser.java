@@ -2,65 +2,99 @@ package pipeline;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 import edu.stanford.nlp.simple.*;
 import helpers.JSONIOHelper;
 
-
 public class B2Lemmatiser {
 
+	// create new variable user_out for the name of the lemmatised file
+	private static String user_out;
+
 	public static void main(String[] args) {
-		
+
 		B2Lemmatiser loader = new B2Lemmatiser();
-		
-		loader.StartLemmatisation("JSONDataStore.json");
-		
+
+		// new Scanner instance to read the output file name from the user
+		Scanner scanner = new Scanner(System.in);
+
+		// create while loop to ask the user for the correct output name of the file
+		boolean user_act = true;
+
+		while (user_act == true) {
+
+			// ask user for the name of the output file and double check it
+			System.out.println("Please enter the desired name of the lemmatised output file: ");
+			user_out = scanner.nextLine();
+			System.out.println("You entered the file name: " + user_out);
+			System.out.println("Is that correct? Please type [y]es or [n]o");
+			String user_ans = scanner.nextLine();
+			user_ans = user_ans.toLowerCase();
+
+			// check if the user entered the file name correct or spotted a typo or
+			// something and wants to re-enter it
+			if (user_ans.startsWith("y")) {
+				loader.StartLemmatisation("JSONDataStore.json");
+				user_act = false;
+				scanner.close();
+				break;
+			} else if (user_ans.startsWith("n")) {
+				System.out.println("Please enter a new file name.");
+			} else {
+				System.out.println("Something went wrong.");
+			}
+		}
 	}
-	
+
 	private void StartLemmatisation(String filePath) {
 		System.out.println("Loading JSON file...");
-		
+
 		// create a JSONIOHelper Object and call the LoadJSON method
 		JSONIOHelper JSONIO = new JSONIOHelper();
 		JSONIO.LoadJSON("JSONDataStore.json");
-		
-		// call the concurrent hash map method to put the JSON into the outgoing data structure
-		ConcurrentHashMap<String,String> documents = JSONIO.GetDocumentsFromJSONStructure();
-		
-		ConcurrentHashMap<String,String> lemmatised = JSONIO.GetLemmasFromJSONStructure();
-		
-		// call the lemmatise method for every row of text in the documents object
+
+		// call the concurrent hash map method to put the JSON into the outgoing data
+		// structure
+		ConcurrentHashMap<String, String> documents = JSONIO.GetDocumentsFromJSONStructure();
+
+		ConcurrentHashMap<String, String> lemmatised = JSONIO.GetLemmasFromJSONStructure();
+
+		// call the lemmatise method for every row of text in the documents object and put it in the lemmatisedObject
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
 		}
-		
+
 		JSONIO.AddLemmasToJSONStructure(lemmatised);
-		JSONIO.SaveJSON("doc_and_lemm.json");
+		JSONIO.SaveJSON(user_out);
 
 	}
-	
+
 	private String LemmatiseSingleDoc(String text) {
 		// a method to lemmatise a single document which is passed as an argument
-		
-		// use regex to clean the data (remove most punctuation and replace several whitespace with a single one
+
+		// use regular expressions to clean the data (remove most punctuation and
+		// replace several whitespace with a single one
 		text = text.replaceAll("\\p{Punct}", " ");
 		text = text.replaceAll("\\s+", " ");
-		
-		// remove all leading and trailing whitespace and set all to lowercase
+
+		// remove all leading and trailing whitespace and set all to lower case
 		text = text.replaceAll("^[ \\t]+|[ \\t]+$", "");
 		text = text.toLowerCase();
+
+		// use the Stanford NLP library to lemmatise the text
 		
-		// use the stanford nlp library to lemmatise the text
-		//first: create a sentence object and pass the text to it
+		// first: create a sentence object and pass the text to it
 		Sentence sent = new Sentence(text);
 		// create a list of strings and call the method lemmas on it
 		List<String> lemmas = sent.lemmas();
-		// finally convert the List<String> back to a simple string and pass it to text with a whitespace as a delimiter
+		// finally convert the List<String> back to a simple string and pass it to text
+		// with a whitespace as a delimiter
 		text = String.join(" ", lemmas);
-		
-		System.out.println(text);
-		
+
+		// System.out.println(text);
+
 		return text;
 	}
 
