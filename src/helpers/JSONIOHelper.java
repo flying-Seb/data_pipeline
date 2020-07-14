@@ -10,7 +10,7 @@ import org.json.simple.parser.JSONParser;
 
 public class JSONIOHelper {
 
-	// create class variables for two JSON Objects
+	// create class variables for three JSON Objects
 	JSONObject rootObject;
 	JSONObject documentsObject;
 	JSONObject lemmasObject;
