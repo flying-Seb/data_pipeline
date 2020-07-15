@@ -1,5 +1,9 @@
 package pipeline;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +66,7 @@ public class B3DescriptiveStatistics {
 			}
 
 		}
-		
+
 		// 4. for each word in corpus
 		for (String item : corpus) {
 			// I. if word in counts -> add 1 to the value of word
@@ -78,9 +82,30 @@ public class B3DescriptiveStatistics {
 			}
 		}
 
-		// 5. third loop to print counts
-		for(Entry<String, Integer> entry : counts.entrySet()) {
-			System.out.println(entry.getKey() + ": " + entry.getValue());
+		// call the method to output the counts
+		loader.OutputAsCSV(counts, "CorpusWordCounts.csv");
+
+	}
+
+	private void OutputAsCSV(ConcurrentHashMap<String, Integer> counts, String fileName) {
+		// method to output the counted words to a CSV file
+
+		String CSVOutput = new String();
+
+		for (Entry<String, Integer> entry : counts.entrySet()) {
+			// append a single line with key, value, \n to the result String
+			CSVOutput = CSVOutput + (entry.getKey() + "," + entry.getValue() + System.lineSeparator());
+		}
+
+		// try-catch block to write the string to a file
+		try (FileWriter writer = new FileWriter(fileName)) {
+			// writing the String to a file
+			writer.write(CSVOutput);
+			System.out.println("Saving counts to CSV-file succeeded.");
+			System.out.println("\n");
+		} catch (Exception e) {
+			System.out.println("Saving counts to CSV-file failed...");
+			System.out.println("\n");
 		}
 
 	}
