@@ -18,7 +18,7 @@ public class B3DescriptiveStatistics {
 
 	public static void main(String[] args) {
 
-		loader.StartCreatingStatistics("ExampleOutput.txt");
+		loader.StartCreatingStatistics("ComplexOutput.txt");
 
 	}
 
@@ -32,14 +32,16 @@ public class B3DescriptiveStatistics {
 		ConcurrentHashMap<String, String> lemmas = helper.GetLemmasFromJSONStructure();
 		;
 
-		// print every entry to double-check the loading
-		for (Entry<String, String> entry : lemmas.entrySet()) {
-			System.out.println(entry.getKey() + ": " + entry.getValue());
-		}
+		// print every entry to double-check the loading (comment out for submission)
+		// for (Entry<String, String> entry : lemmas.entrySet()) {
+		// System.out.println(entry.getKey() + ": " + entry.getValue());
+		// }
 
 		System.out.println("Loaded succesfully!");
 
 		loader.CountWordsInCorpus(lemmas);
+
+		loader.CountWordsInDocument(lemmas);
 
 	}
 
@@ -83,17 +85,41 @@ public class B3DescriptiveStatistics {
 		}
 
 		// call the method to output the counts
-		loader.OutputAsCSV(counts, "CorpusWordCounts.csv");
+		loader.OutpuCountAsCSV(counts, "CorpusWordCounts.csv");
 
 	}
 
-	private void OutputAsCSV(ConcurrentHashMap<String, Integer> counts, String fileName) {
+	private void CountWordsInDocument(ConcurrentHashMap<String, String> lemmas) {
+		// a method to count the words in each document
+
+		// create a new concurrent HashMap called counts
+		ConcurrentHashMap<String, Integer> counts = new ConcurrentHashMap<String, Integer>();
+
+		// for each document in lemmas
+		for (Entry<String, String> entry : lemmas.entrySet()) {
+			// get the string in value and split it at the whitespace
+			String[] value = entry.getValue().split(" ");
+
+			// count the number of words
+			Integer numOfWords = value.length;
+
+			// and save that number into counts with the same key as in lemmas
+			counts.put(entry.getKey(), numOfWords);
+
+		}
+
+		// call the method to output the counts
+		loader.OutpuCountAsCSV(counts, "DocumentCounts.csv");
+
+	}
+
+	private void OutpuCountAsCSV(ConcurrentHashMap<String, Integer> counts, String fileName) {
 		// method to output the counted words to a CSV file
 
-		String CSVOutput = new String();
+		String CSVOutput = "";
 
 		for (Entry<String, Integer> entry : counts.entrySet()) {
-			// append a single line with key, value, \n to the result String
+			// append a single line with key, value and new line to the result String
 			CSVOutput = CSVOutput + (entry.getKey() + "," + entry.getValue() + System.lineSeparator());
 		}
 

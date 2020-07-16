@@ -28,7 +28,7 @@ public class B1TextLoader {
 			// create variable for console input to ask which file to load and lemmatise
 			// from the user
 			// new Scanner object for System.in input
-			Scanner scanner = new Scanner(System.in);  // will be closed in the B2Lemmatiser class
+			Scanner scanner = new Scanner(System.in); // will be closed in the B2Lemmatiser class
 			System.out.println("Please enter the name of the file you want to read: ");
 
 			// read the next line and save it to the variable user_in
@@ -42,7 +42,8 @@ public class B1TextLoader {
 			String user_ans = scanner.nextLine();
 			user_ans = user_ans.toLowerCase();
 
-			// check if the user entered the file name correct or spotted a typo or other mistake
+			// check if the user entered the file name correct or spotted a typo or other
+			// mistake
 			// something and wants to re-enter it
 			if (user_ans.startsWith("c")) {
 				// load the given Text File which is stored in the same workspace
@@ -58,7 +59,8 @@ public class B1TextLoader {
 			}
 		}
 
-		// call the B2Lemmatiser to have a consistent process and let the user just start one program/class
+		// call the B2Lemmatiser to have a consistent process and let the user just
+		// start one program/class
 		B2Lemmatiser.main(args);
 
 	}
@@ -107,8 +109,10 @@ public class B1TextLoader {
 		// create an array of Strings which contains all words of a document
 		String[] words = value.split(" ");
 
-		/* I commented that out for the assessment because it could confuse the user
-		   while loading very large files and fill the screen unnecessary */
+		/*
+		 * I commented that out for the assessment because it could confuse the user
+		 * while loading very large files and fill the screen unnecessary
+		 */
 
 		// count the array and print the number of words
 		// System.out.println(key + " has " + words.length + " words!");

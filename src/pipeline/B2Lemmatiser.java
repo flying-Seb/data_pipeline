@@ -39,6 +39,7 @@ public class B2Lemmatiser {
 				loader.StartLemmatisation("JSONDataStore.json");
 				user_act = false;
 				scanner.close();
+				// maybe call B3 here for a smooth workflow
 				break;
 			} else if (user_ans.startsWith("n")) {
 				System.out.println("Please enter a new file name.");
@@ -61,7 +62,8 @@ public class B2Lemmatiser {
 
 		ConcurrentHashMap<String, String> lemmatised = JSONIO.GetLemmasFromJSONStructure();
 
-		// call the lemmatise method for every row of text in the documents object and put it in the lemmatisedObject
+		// call the lemmatise method for every row of text in the documents object and
+		// put it in the lemmatisedObject
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
 		}
@@ -84,7 +86,7 @@ public class B2Lemmatiser {
 		text = text.toLowerCase();
 
 		// use the Stanford NLP library to lemmatise the text
-		
+
 		// first: create a sentence object and pass the text to it
 		Sentence sent = new Sentence(text);
 		// create a list of strings and call the method lemmas on it
