@@ -102,7 +102,7 @@ public class B2Lemmatiser {
 		// with a whitespace as a delimiter
 		text = String.join(" ", lemmas);
 		
-		// print text for evidence
+		// print document text for evidence
 		System.out.println(text);
 
 		// remove the stop-words from the text in every single document
@@ -127,7 +127,7 @@ public class B2Lemmatiser {
 		// 4. convert the ArrayList<String> back to a simple String which is returned from the method
 		text = String.join(" ", allWords);
 
-		// print text for evidence
+		// print document text for evidence
 		System.out.println(text);
 		
 		return text;
