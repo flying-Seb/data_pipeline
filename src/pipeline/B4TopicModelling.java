@@ -72,14 +72,14 @@ public class B4TopicModelling {
 		// method to run the topic modelling
 
 		// build aPipe array list
-		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
+		ArrayList<Pipe> pipeList = new ArrayList <Pipe>();
 
 		// Pipes: tokenise, map to features
 		pipeList.add(new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")));
 		pipeList.add(new TokenSequence2FeatureSequence());
 
 		// add a new instance list which takes the pipeList as an argument
-		InstanceList instances = new InstanceList(new SerialPipes());
+		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 
 		InputStreamReader fileReader = null;
 		
@@ -90,7 +90,7 @@ public class B4TopicModelling {
 
 		// try-catch-block for opening a FileReader and load the data from the flat text
 		// file
-		try (FileReader reader = new FileReader(TMFlatFile)) {
+		try (FileReader reader = new FileReader(file)) {
 			// load the data
 			reader.read();
 
@@ -105,7 +105,7 @@ public class B4TopicModelling {
 		// link the data into the processing pipeline
 		instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1));
 		
-		// create a model that runs the topic modelling
+		// create a model that runs the topic modelling parallel
 		ParallelTopicModel model = new ParallelTopicModel(numTopics, 1.0, 0.01);
 		
 		// add the variables to the model

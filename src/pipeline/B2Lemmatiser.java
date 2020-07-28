@@ -1,9 +1,16 @@
 package pipeline;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import edu.stanford.nlp.simple.*;
 import helpers.JSONIOHelper;
@@ -94,9 +101,35 @@ public class B2Lemmatiser {
 		// finally convert the List<String> back to a simple string and pass it to text
 		// with a whitespace as a delimiter
 		text = String.join(" ", lemmas);
+		
+		// print text for evidence
+		System.out.println(text);
 
-		// System.out.println(text);
+		// remove the stop-words from the text in every single document
 
+		// 1. load the stop-words
+		List<String> stopwords = null;
+		try {
+			stopwords = Files.readAllLines(Paths.get("stopwords.txt"));
+		} catch (Exception e) {
+			System.out.println("Please put 'stopwords.txt' in the correct location.");
+			e.printStackTrace();
+		}
+
+		// 2. transform the original text from the document to an ArrayList<String> 
+		// and to use the method removeAll()
+		ArrayList<String> allWords = Stream.of(text.toLowerCase().split(" "))
+				.collect(Collectors.toCollection(ArrayList<String>::new));
+
+		// 3. use the method removeAll() to remove all stop-words
+		allWords.removeAll(stopwords);
+		
+		// 4. convert the ArrayList<String> back to a simple String which is returned from the method
+		text = String.join(" ", allWords);
+
+		// print text for evidence
+		System.out.println(text);
+		
 		return text;
 	}
 
