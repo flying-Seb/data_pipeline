@@ -1,5 +1,6 @@
 package pipeline;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -43,7 +44,7 @@ public class B4TopicModelling {
 		loader.SaveLemmaDataToFile("topicdata.txt", lemmas);
 
 		// run the topic modeling
-		loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
+		// loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
 	}
 
 	private void SaveLemmaDataToFile(String TMFlatFile, ConcurrentHashMap<String, String> lemmas) {
@@ -79,23 +80,14 @@ public class B4TopicModelling {
 		// create a File and a FileInputStream Object
 		File file = new File(TMFlatFile);
 		try {
-			FileInputStream stream = new FileInputStream(TMFlatFile);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
-		// try-catch-block for opening a FileReader and load the data from the flat text
-		// file
-		try (FileReader reader = new FileReader(file)) {
-			// load the data
-			reader.read();
-
+			FileInputStream stream = new FileInputStream(file);
+			int textData = stream.read();
+			while (textData != -1) {
+				textData = stream.read();
+			}
+			stream.close();
 		} catch (Exception e) {
-			System.out.println("An error has occured.");
-			e.printStackTrace();
-
-			// stop the program
-			System.exit(1);
+			System.out.println(e);
 		}
 
 		// link the data into the processing pipeline

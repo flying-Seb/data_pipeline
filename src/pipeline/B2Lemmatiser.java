@@ -71,7 +71,7 @@ public class B2Lemmatiser {
 		// call the lemmatise method for every row of text in the documents object and
 		// put it in the lemmatisedObject
 		
-		// parallelize here!
+// parallelize here!
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
 		}
