@@ -40,8 +40,7 @@ public class B2Lemmatiser {
 			String user_ans = scanner.nextLine();
 			user_ans = user_ans.toLowerCase();
 
-			// check if the user entered the file name correct or spotted a typo or
-			// something and wants to re-enter it
+			// check if the user entered the file name correct 
 			if (user_ans.startsWith("y")) {
 				loader.StartLemmatisation("JSONDataStore.json");
 				user_act = false;
@@ -71,13 +70,15 @@ public class B2Lemmatiser {
 
 		// call the lemmatise method for every row of text in the documents object and
 		// put it in the lemmatisedObject
+		
+		// parallelize here!
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
 		}
 
 		JSONIO.AddLemmasToJSONStructure(lemmatised);
+		JSONIO.SaveJSON("JSONDataStore.json");
 		JSONIO.SaveJSON(user_out);
-
 	}
 
 	private String LemmatiseSingleDoc(String text) {
@@ -101,9 +102,6 @@ public class B2Lemmatiser {
 		// finally convert the List<String> back to a simple string and pass it to text
 		// with a whitespace as a delimiter
 		text = String.join(" ", lemmas);
-		
-		// print document text for evidence
-		System.out.println(text);
 
 		// remove the stop-words from the text in every single document
 
@@ -126,9 +124,6 @@ public class B2Lemmatiser {
 		
 		// 4. convert the ArrayList<String> back to a simple String which is returned from the method
 		text = String.join(" ", allWords);
-
-		// print document text for evidence
-		System.out.println(text);
 		
 		return text;
 	}

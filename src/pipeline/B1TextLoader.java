@@ -58,11 +58,6 @@ public class B1TextLoader {
 				System.out.println("Something went wrong.");
 			}
 		}
-
-		// call the B2Lemmatiser to have a consistent process and let the user just
-		// start one program/class
-		B2Lemmatiser.main(args);
-
 	}
 
 	public void loadTextFile(String filePath) {
@@ -108,14 +103,6 @@ public class B1TextLoader {
 	public void CountWordsInDocument(String key, String value) {
 		// create an array of Strings which contains all words of a document
 		String[] words = value.split(" ");
-
-		/*
-		 * I commented that out for the assessment because it could confuse the user
-		 * while loading very large files and fill the screen unnecessary
-		 */
-
-		// count the array and print the number of words
-		// System.out.println(key + " has " + words.length + " words!");
 
 	}
 
