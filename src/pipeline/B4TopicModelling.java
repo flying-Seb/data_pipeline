@@ -6,11 +6,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+import com.opencsv.CSVReader;
+import com.opencsv.CSVParser;
 
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.*;
@@ -44,23 +48,31 @@ public class B4TopicModelling {
 		loader.SaveLemmaDataToFile("topicdata.txt", lemmas);
 
 		// run the topic modeling
-		// loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
+		loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
 	}
 
 	private void SaveLemmaDataToFile(String TMFlatFile, ConcurrentHashMap<String, String> lemmas) {
 		// method to transform the JSON data into the format MALLET expects
 
 		// save every line in lemmas to the text file
-// initiate and open the file once outside of the loop to be more efficient!
-		for (Entry<String, String> entry : lemmas.entrySet()) {
-			try (FileWriter writer = new FileWriter(TMFlatFile, true)) { // 'true' is to append text to the file
-				// write the format MALLET expects
-				writer.write(entry.getKey() + "\ten\t" + entry.getValue() + "\r\n");
-			} catch (Exception e) {
-				System.out.println("Writing lines to txt-file failed...");
-				System.out.println("\n");
+		// initiate and open the file once outside of the loop to be more efficient!
+		FileWriter writer;
+		try {
+			writer = new FileWriter(TMFlatFile, true); // 'true' is to append text to the file
+			// write the format MALLET expects
+			for (Entry<String, String> entry : lemmas.entrySet()) {
+				try {
+					writer.write(entry.getKey() + "\ten\t" + entry.getValue() + "\r\n");
+				} catch (IOException e) {
+					System.out.println("Writing lines to txt-file failed...");
+					System.out.println("\n");
+				}
 			}
+		} catch (IOException e) {
+			System.out.println("Writing lines to txt-file failed...");
+			System.out.println("\n");
 		}
+
 	}
 
 	private void RunTopicModelling(String TMFlatFile, int numTopics, int numThreads, int numIterations) {
@@ -77,16 +89,19 @@ public class B4TopicModelling {
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 
 		InputStreamReader fileReader = null;
+		CSVReader csvReader = null;
 
 		// create a File and a FileInputStream Object
 		File file = new File(TMFlatFile);
+
 		try {
-			FileInputStream stream = new FileInputStream(file);
-			int textData = stream.read();
-			while (textData != -1) {
-				textData = stream.read();
-			}
-			stream.close();
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			csvReader = new CSVReader(br);
+			// FileInputStream stream = new FileInputStream(file);
+			csvReader.readAll();
+			// how to pass csvReader to fileReader??
+			// fileReader.read();
+			System.out.println(csvReader);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
