@@ -51,8 +51,9 @@ public class B4TopicModelling {
 		// method to transform the JSON data into the format MALLET expects
 
 		// save every line in lemmas to the text file
+// initiate and open the file once outside of the loop to be more efficient!
 		for (Entry<String, String> entry : lemmas.entrySet()) {
-			try (FileWriter writer = new FileWriter(TMFlatFile)) {
+			try (FileWriter writer = new FileWriter(TMFlatFile, true)) { // 'true' is to append text to the file
 				// write the format MALLET expects
 				writer.write(entry.getKey() + "\ten\t" + entry.getValue() + "\r\n");
 			} catch (Exception e) {

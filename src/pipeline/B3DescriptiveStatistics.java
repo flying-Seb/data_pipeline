@@ -18,7 +18,7 @@ public class B3DescriptiveStatistics {
 
 	public static void main(String[] args) {
 
-		loader.StartCreatingStatistics("CoOut.txt");
+		loader.StartCreatingStatistics("ExOut.txt");
 
 	}
 
