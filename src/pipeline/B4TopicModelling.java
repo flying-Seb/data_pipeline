@@ -48,7 +48,7 @@ public class B4TopicModelling {
 		loader.SaveLemmaDataToFile("topicdata.txt", lemmas);
 
 		// run the topic modeling
-		loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
+		// loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
 	}
 
 	private void SaveLemmaDataToFile(String TMFlatFile, ConcurrentHashMap<String, String> lemmas) {
@@ -87,7 +87,8 @@ public class B4TopicModelling {
 
 		// add a new instance list which takes the pipeList as an argument
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
-
+		
+		
 		InputStreamReader fileReader = null;
 		CSVReader csvReader = null;
 
