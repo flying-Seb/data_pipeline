@@ -48,7 +48,7 @@ public class B4TopicModelling {
 		loader.SaveLemmaDataToFile("topicdata.txt", lemmas);
 
 		// run the topic modeling
-		// loader.RunTopicModelling("topicdata.txt", 10, 3, 500);
+		loader.RunTopicModelling("topicdata.txt", 10, 3, 2000);
 	}
 
 	private void SaveLemmaDataToFile(String TMFlatFile, ConcurrentHashMap<String, String> lemmas) {
@@ -88,22 +88,15 @@ public class B4TopicModelling {
 		// add a new instance list which takes the pipeList as an argument
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 		
-		
-		InputStreamReader fileReader = null;
-		CSVReader csvReader = null;
-
-		// create a File and a FileInputStream Object
+		// create a File and a InputStreamReader Object
 		File file = new File(TMFlatFile);
+		InputStreamReader fileReader = null;
 
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			csvReader = new CSVReader(br);
-			// FileInputStream stream = new FileInputStream(file);
-			csvReader.readAll();
-			// how to pass csvReader to fileReader??
-			// fileReader.read();
-			System.out.println(csvReader);
-		} catch (Exception e) {
+			// create a FileReader with the file as an argument and pass it to the InputStreamReader
+			fileReader = new FileReader(file);
+		} catch (FileNotFoundException e) {
+			System.out.println("The file "+TMFlatFile+" has not been found.");
 			System.out.println(e);
 		}
 
