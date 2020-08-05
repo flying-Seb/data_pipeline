@@ -17,7 +17,7 @@ public class B1TextLoader {
 	public static void main(String[] args) {
 		// main method for program logic
 
-		// create new instance of this class
+		// create new instance of the classes to start the main methods
 		B1TextLoader loader = new B1TextLoader();
 
 		// create while loop to ask the user for the correct output name of the file
@@ -51,6 +51,8 @@ public class B1TextLoader {
 				// save the text file to a JSON file
 				loader.SaveDocumentsToJSON("JSONDataStore.json");
 				user_act = false;
+				// call the next class in the process for a smooth workflow
+				B2Lemmatiser.main(args);
 				break;
 			} else if (user_ans.startsWith("n")) {
 				System.out.println("Please enter a new file to load.");

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -19,6 +20,10 @@ public class B2Lemmatiser {
 
 	// create new variable user_out for the name of the lemmatised file
 	private static String user_out;
+
+	public static String getUser_out() {
+		return user_out;
+	}
 
 	public static void main(String[] args) {
 
@@ -39,19 +44,27 @@ public class B2Lemmatiser {
 			System.out.println("Is that correct? Please type [y]es or [n]o");
 			String user_ans = scanner.nextLine();
 			user_ans = user_ans.toLowerCase();
-
-			// check if the user entered the file name correct 
+			
+			
+			// check if the user entered the file name correct
 			if (user_ans.startsWith("y")) {
 				loader.StartLemmatisation("JSONDataStore.json");
+				// get the start time to measure performance of processing in parallel
+				long startTime = System.nanoTime();
 				user_act = false;
 				scanner.close();
-				// maybe call B3 here for a smooth workflow
+				// get the result time to measure performance of processing in parallel
+				long endTime = System.nanoTime() - startTime;
+				System.out.println("The lemmatisation took: " + endTime + " nano seconds.");
+				// call the next class in the process for a smooth workflow
+				B3DescriptiveStatistics.main(args);
 				break;
 			} else if (user_ans.startsWith("n")) {
 				System.out.println("Please enter a new file name.");
 			} else {
 				System.out.println("Something went wrong.");
 			}
+			
 		}
 	}
 
@@ -71,10 +84,16 @@ public class B2Lemmatiser {
 		// call the lemmatise method for every row of text in the documents object and
 		// put it in the lemmatisedObject
 		
-// parallelize here!
+		// map.forEach((k, v) -> method(k, v))
+		
+		// parallelize here!
+		documents.forEach(1, (k, v) -> lemmatised.put(k, LemmatiseSingleDoc(v)));
+		
+		/*
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
 		}
+		*/
 
 		JSONIO.AddLemmasToJSONStructure(lemmatised);
 		JSONIO.SaveJSON("JSONDataStore.json");
@@ -114,17 +133,18 @@ public class B2Lemmatiser {
 			e.printStackTrace();
 		}
 
-		// 2. transform the original text from the document to an ArrayList<String> 
+		// 2. transform the original text from the document to an ArrayList<String>
 		// and to use the method removeAll()
 		ArrayList<String> allWords = Stream.of(text.toLowerCase().split(" "))
 				.collect(Collectors.toCollection(ArrayList<String>::new));
 
 		// 3. use the method removeAll() to remove all stop-words
 		allWords.removeAll(stopwords);
-		
-		// 4. convert the ArrayList<String> back to a simple String which is returned from the method
+
+		// 4. convert the ArrayList<String> back to a simple String which is returned
+		// from the method
 		text = String.join(" ", allWords);
-		
+
 		return text;
 	}
 

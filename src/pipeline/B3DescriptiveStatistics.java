@@ -18,7 +18,10 @@ public class B3DescriptiveStatistics {
 
 	public static void main(String[] args) {
 
-		loader.StartCreatingStatistics("C_Out.txt");
+		loader.StartCreatingStatistics(B2Lemmatiser.getUser_out());
+		
+		// call the next class in the process for a smooth workflow
+		B4TopicModelling.main(args);
 
 	}
 

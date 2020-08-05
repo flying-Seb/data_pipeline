@@ -17,10 +17,9 @@ public class JSONIOHelper {
 
 	// create three methods to structure, update and save JSON data
 	public void CreateBasicJSONStructure() {
-		// create new instances of the Objects (Step 1)
+		// create new instances of the Objects
 		rootObject = new JSONObject();
 		documentsObject = new JSONObject();
-		// create new object (lemmasObject) and add it to the rootObject (2nd)
 		lemmasObject = new JSONObject();
 
 		// add both "child" objects to the root object
@@ -30,7 +29,7 @@ public class JSONIOHelper {
 	}
 
 	public void AddDocumentsToJSONStructure(ConcurrentHashMap<String, String> documents) {
-		// adding file data (from B1TextLoader) to JSON data structure (Step 2)
+		// adding file data (from B1TextLoader) to JSON data structure
 
 		// creating a for-each loop to iterate over the documents concurrent hash map
 		for (Entry<String, String> entry : documents.entrySet()) {
@@ -38,7 +37,7 @@ public class JSONIOHelper {
 		}
 
 	}
-	
+
 	public void AddLemmasToJSONStructure(ConcurrentHashMap<String, String> lemmas) {
 		// a method to convert the lemmatised text into JSONStructure
 		for (Entry<String, String> entry : lemmas.entrySet()) {
@@ -89,17 +88,17 @@ public class JSONIOHelper {
 		} finally {
 			System.out.println("JSON Loading complete. Lines: " + documentsObject.size());
 		}
-		
+
 		// another try-catch block for the lemmatised text
-		try (FileReader file = new FileReader(filename)){
+		try (FileReader file = new FileReader(filename)) {
 			JSONParser parser = new JSONParser();
-			
+
 			rootObject = (JSONObject) parser.parse(file);
-			
-			if(rootObject.get("lemmas") != null) {
+
+			if (rootObject.get("lemmas") != null) {
 				lemmasObject = (JSONObject) rootObject.get("lemmas");
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			System.out.println("JSON Loading complete. Lines: " + lemmasObject.size());
@@ -109,25 +108,27 @@ public class JSONIOHelper {
 
 	public ConcurrentHashMap<String, String> GetDocumentsFromJSONStructure() {
 		// a method to get the documents from the JSON structure
-		
+
 		// create a concurrent hash map object
 		ConcurrentHashMap<String, String> documents = new ConcurrentHashMap<String, String>();
 
-		// iterate over the hash map and fill it with key of documents and text (casted to Strings)
+		// iterate over the hash map and fill it with key of documents and text (casted
+		// to Strings)
 		for (String key : (Iterable<String>) documentsObject.keySet()) {
 			documents.put(key, (String) documentsObject.get(key));
 		}
 
 		return documents;
 	}
-	
-	public ConcurrentHashMap<String, String> GetLemmasFromJSONStructure(){
+
+	public ConcurrentHashMap<String, String> GetLemmasFromJSONStructure() {
 		// a method to get the lemmatised text from the JSON structure
-		
+
 		// create a concurrent has map object
 		ConcurrentHashMap<String, String> lemmas = new ConcurrentHashMap<String, String>();
-		
-		// iterate over the hash map and fill it with key of lemmas and text (casted to Strings)
+
+		// iterate over the hash map and fill it with key of lemmas and text (casted to
+		// Strings)
 		for (String key : (Iterable<String>) lemmasObject.keySet()) {
 			lemmas.put(key, (String) lemmasObject.get(key));
 		}
