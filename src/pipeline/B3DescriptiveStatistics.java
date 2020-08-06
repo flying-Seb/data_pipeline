@@ -19,7 +19,7 @@ public class B3DescriptiveStatistics {
 	public static void main(String[] args) {
 
 		loader.StartCreatingStatistics(B2Lemmatiser.getUser_out());
-		
+
 		// call the next class in the process for a smooth workflow
 		B4TopicModelling.main(args);
 
@@ -33,12 +33,6 @@ public class B3DescriptiveStatistics {
 
 		// put it into a concurrent hash-map and fill it with the lemmas from the file
 		ConcurrentHashMap<String, String> lemmas = helper.GetLemmasFromJSONStructure();
-		;
-
-		// print every entry to double-check the loading (comment out for submission)
-		// for (Entry<String, String> entry : lemmas.entrySet()) {
-		// System.out.println(entry.getKey() + ": " + entry.getValue());
-		// }
 
 		System.out.println("Loaded succesfully!");
 

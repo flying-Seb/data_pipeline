@@ -78,7 +78,7 @@ public class B4TopicModelling {
 	private void RunTopicModelling(String TMFlatFile, int numTopics, int numThreads, int numIterations) {
 		// method to run the topic modeling
 
-		// build aPipe array list
+		// build a Pipe array list
 		ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
 		// Pipes: tokenise, map to features
@@ -100,12 +100,11 @@ public class B4TopicModelling {
 			System.out.println(e);
 		}
 
-		// link the data into the processing pipeline
+		// link the data into the processing InstanceList
 		instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1));
 
 		// create a model that runs the topic modeling in parallelization
 		ParallelTopicModel model = new ParallelTopicModel(numTopics, 1.0, 0.01);
-
 		// add the variables to the model
 		model.addInstances(instances);
 		model.setNumThreads(numThreads);
@@ -117,6 +116,10 @@ public class B4TopicModelling {
 		} catch (Exception e) {
 			System.out.println("An error occured.");
 		}
+		
+		// output a csv file in the required format
+		model.displayTopWords(numThreads, true);
+		
 	}
 
 }

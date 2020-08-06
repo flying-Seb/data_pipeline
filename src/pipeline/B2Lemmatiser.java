@@ -82,13 +82,11 @@ public class B2Lemmatiser {
 		ConcurrentHashMap<String, String> lemmatised = JSONIO.GetLemmasFromJSONStructure();
 
 		// call the lemmatise method for every row of text in the documents object and
-		// put it in the lemmatisedObject
-		
-		// map.forEach((k, v) -> method(k, v))
-		
-		// parallelize here!
+		// put it in the lemmatisedObject		
+		// fill the lemmatised ConcurrentHashMap with clean values and run in parallel
 		documents.forEach(1, (k, v) -> lemmatised.put(k, LemmatiseSingleDoc(v)));
 		
+		// This is the old code before parallelization to compare both methods!
 		/*
 		for (Entry<String, String> entry : documents.entrySet()) {
 			lemmatised.put(entry.getKey(), LemmatiseSingleDoc(entry.getValue()));
