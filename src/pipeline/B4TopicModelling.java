@@ -128,22 +128,11 @@ public class B4TopicModelling {
 		}
 		
 		// get a CSV file output from the topic modelling
+		String CSVOutput = "";
 		// The data alphabet maps word IDs to strings
         Alphabet dataAlphabet = instances.getDataAlphabet();
         
-        FeatureSequence tokens = (FeatureSequence) model.getData().get(0).instance.getData();
-        LabelSequence topics = model.getData().get(0).topicSequence;
-        
-        Formatter out = new Formatter(new StringBuilder(), Locale.US);
-        /*
-        for (int position = 0; position < tokens.getLength(); position++) {
-            out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(position)), topics.getIndexAtPosition(position));
-        }
-        System.out.println(out);*/
-        
-        // Estimate the topic distribution of the first instance, 
-        //  given the current Gibbs state.
-        double[] topicDistribution = model.getTopicProbabilities(0);        
+        Formatter out = new Formatter(new StringBuilder(), Locale.UK);      
         
         // Get an array of sorted sets of word ID/count pairs
         ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
@@ -152,19 +141,32 @@ public class B4TopicModelling {
         for (int topic = 0; topic < numTopics; topic++) {
             Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
             
-            out = new Formatter(new StringBuilder(), Locale.US);
-            out.format("%d\t", topic);
+            out = new Formatter(new StringBuilder(), Locale.UK);
+            out.format("%d, ", topic);
             int rank = 0;
+            // append every word to the string until the 10th word is reached
             while (iterator.hasNext() && rank < 10) {
                 IDSorter idCountPair = iterator.next();
                 out.format("%s ", dataAlphabet.lookupObject(idCountPair.getID()));
                 rank++;
             }
-            System.out.println(out);
+            //System.out.println(out);
             
-            // append out for every topic to a result string with a line separator that can be written to a file afterwards
+            // append 'out' for every topic to CSVOutput with a line separator 
+            CSVOutput = CSVOutput + out + System.lineSeparator();
             
         }
+        
+        // try-catch block to write the string to a file
+		try (FileWriter writer = new FileWriter("TopTenTopicData.csv")) {
+			// writing the CSVOutput to a CSV file
+			writer.write(CSVOutput);
+			System.out.println("Saving topics to CSV-file succeeded.");
+			System.out.println("\n");
+		} catch (Exception e) {
+			System.out.println("Saving topics to CSV-file failed...");
+			System.out.println("\n");
+		}
 		
 	}
 
