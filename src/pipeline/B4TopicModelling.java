@@ -8,8 +8,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.*;
 import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -19,7 +23,13 @@ import com.opencsv.CSVParser;
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.*;
 import cc.mallet.topics.*;
+import cc.mallet.util.*;
+import cc.mallet.topics.*;
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.FeatureSequence;
+import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.LabelSequence;
 import helpers.JSONIOHelper;
 
 public class B4TopicModelling {
@@ -117,8 +127,44 @@ public class B4TopicModelling {
 			System.out.println("An error occured.");
 		}
 		
-		// output a csv file in the required format
-		model.displayTopWords(numThreads, true);
+		// get a CSV file output from the topic modelling
+		// The data alphabet maps word IDs to strings
+        Alphabet dataAlphabet = instances.getDataAlphabet();
+        
+        FeatureSequence tokens = (FeatureSequence) model.getData().get(0).instance.getData();
+        LabelSequence topics = model.getData().get(0).topicSequence;
+        
+        Formatter out = new Formatter(new StringBuilder(), Locale.US);
+        /*
+        for (int position = 0; position < tokens.getLength(); position++) {
+            out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(position)), topics.getIndexAtPosition(position));
+        }
+        System.out.println(out);*/
+        
+        // Estimate the topic distribution of the first instance, 
+        //  given the current Gibbs state.
+        double[] topicDistribution = model.getTopicProbabilities(0);        
+        
+        // Get an array of sorted sets of word ID/count pairs
+        ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
+        
+        // Show top 10 words in topics with proportions for the first document
+        for (int topic = 0; topic < numTopics; topic++) {
+            Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
+            
+            out = new Formatter(new StringBuilder(), Locale.US);
+            out.format("%d\t", topic);
+            int rank = 0;
+            while (iterator.hasNext() && rank < 10) {
+                IDSorter idCountPair = iterator.next();
+                out.format("%s ", dataAlphabet.lookupObject(idCountPair.getID()));
+                rank++;
+            }
+            System.out.println(out);
+            
+            // append out for every topic to a result string with a line separator that can be written to a file afterwards
+            
+        }
 		
 	}
 
