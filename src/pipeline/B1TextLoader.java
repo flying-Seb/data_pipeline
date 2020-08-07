@@ -25,10 +25,9 @@ public class B1TextLoader {
 
 		while (user_act == true) {
 
-			// create variable for console input to ask which file to load and lemmatise
-			// from the user
-			// new Scanner object for System.in input
-			Scanner scanner = new Scanner(System.in); // will be closed in the B2Lemmatiser class
+			// create scanner for console input 
+			// will be closed in the B2Lemmatiser class
+			Scanner scanner = new Scanner(System.in); 
 			System.out.println("Please enter the name of the file you want to read: ");
 
 			// read the next line and save it to the variable user_in
@@ -59,6 +58,7 @@ public class B1TextLoader {
 			} else {
 				System.out.println("Something went wrong.");
 			}
+			scanner.close();
 		}
 	}
 
@@ -104,6 +104,7 @@ public class B1TextLoader {
 
 	public void CountWordsInDocument(String key, String value) {
 		// create an array of Strings which contains all words of a document
+		@SuppressWarnings("unused")
 		String[] words = value.split(" ");
 
 	}

@@ -1,13 +1,9 @@
 package pipeline;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -75,8 +71,7 @@ public class B2Lemmatiser {
 		JSONIOHelper JSONIO = new JSONIOHelper();
 		JSONIO.LoadJSON("JSONDataStore.json");
 
-		// call the concurrent hash map method to put the JSON into the outgoing data
-		// structure
+		// call concurrent hash map method to put JSON into outgoing data structure
 		ConcurrentHashMap<String, String> documents = JSONIO.GetDocumentsFromJSONStructure();
 
 		ConcurrentHashMap<String, String> lemmatised = JSONIO.GetLemmasFromJSONStructure();
@@ -102,7 +97,7 @@ public class B2Lemmatiser {
 		// a method to lemmatise a single document which is passed as an argument
 
 		// use regular expressions to clean the data (remove most punctuation and
-		// replace several whitespace with a single one
+		// replace several whitespace with a single one)
 		text = text.replaceAll("\\p{Punct}", " ");
 		text = text.replaceAll("\\s+", " ");
 

@@ -1,8 +1,6 @@
 package pipeline;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -17,19 +15,12 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVParser;
-
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.*;
 import cc.mallet.topics.*;
-import cc.mallet.util.*;
-import cc.mallet.topics.*;
 import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelSequence;
 import helpers.JSONIOHelper;
 
 public class B4TopicModelling {
@@ -97,21 +88,23 @@ public class B4TopicModelling {
 
 		// add a new instance list which takes the pipeList as an argument
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
-		
+
 		// create a File and a InputStreamReader Object
 		File file = new File(TMFlatFile);
 		InputStreamReader fileReader = null;
 
 		try {
-			// create a FileReader with the file as an argument and pass it to the InputStreamReader
+			// create a FileReader with the file as an argument and pass it to the
+			// InputStreamReader
 			fileReader = new FileReader(file);
 		} catch (FileNotFoundException e) {
-			System.out.println("The file "+TMFlatFile+" has not been found.");
+			System.out.println("The file " + TMFlatFile + " has not been found.");
 			System.out.println(e);
 		}
 
 		// link the data into the processing InstanceList
-		instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1));
+		instances
+				.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1));
 
 		// create a model that runs the topic modeling in parallelization
 		ParallelTopicModel model = new ParallelTopicModel(numTopics, 1.0, 0.01);
@@ -126,38 +119,38 @@ public class B4TopicModelling {
 		} catch (Exception e) {
 			System.out.println("An error occured.");
 		}
-		
+
 		// get a CSV file output from the topic modelling
 		String CSVOutput = "";
 		// The data alphabet maps word IDs to strings
-        Alphabet dataAlphabet = instances.getDataAlphabet();
-        
-        Formatter out = new Formatter(new StringBuilder(), Locale.UK);      
-        
-        // Get an array of sorted sets of word ID/count pairs
-        ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
-        
-        // Show top 10 words in topics with proportions for the first document
-        for (int topic = 0; topic < numTopics; topic++) {
-            Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
-            
-            out = new Formatter(new StringBuilder(), Locale.UK);
-            out.format("%d, ", topic);
-            int rank = 0;
-            // append every word to the string until the 10th word is reached
-            while (iterator.hasNext() && rank < 10) {
-                IDSorter idCountPair = iterator.next();
-                out.format("%s ", dataAlphabet.lookupObject(idCountPair.getID()));
-                rank++;
-            }
-            //System.out.println(out);
-            
-            // append 'out' for every topic to CSVOutput with a line separator 
-            CSVOutput = CSVOutput + out + System.lineSeparator();
-            
-        }
-        
-        // try-catch block to write the string to a file
+		Alphabet dataAlphabet = instances.getDataAlphabet();
+
+		// create formatter to build a string to write to a file later
+		Formatter out;
+
+		// Get an array of sorted sets of words
+		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
+
+		// Show top 10 words in topics with proportions for the first document
+		for (int topic = 0; topic < numTopics; topic++) {
+			Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
+
+			out = new Formatter(new StringBuilder(), Locale.UK);
+			out.format("%d, ", topic);
+			int rank = 0;
+			// append every word to the string until the 10th word is reached
+			while (iterator.hasNext() && rank < 10) {
+				IDSorter idCountPair = iterator.next();
+				out.format("%s ", dataAlphabet.lookupObject(idCountPair.getID()));
+				rank++;
+			}
+
+			// append 'out' for every topic to CSVOutput with a line separator
+			CSVOutput = CSVOutput + out + System.lineSeparator();
+
+		}
+
+		// try-catch block to write the string to a file
 		try (FileWriter writer = new FileWriter("TopTenTopicData.csv")) {
 			// writing the CSVOutput to a CSV file
 			writer.write(CSVOutput);
@@ -167,7 +160,7 @@ public class B4TopicModelling {
 			System.out.println("Saving topics to CSV-file failed...");
 			System.out.println("\n");
 		}
-		
+
 	}
 
 }
